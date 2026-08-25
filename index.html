@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduMetrics | Student Performance Analytics Dashboard</title>
+  <meta name="description" content="High Density Student Performance Analytics Dashboard & Holistic Weighted Index Engine" />
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              750: '#293548',
+              850: '#131c2e',
+              925: '#090d16',
+              950: '#020617',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #020617;
+      color: #e2e8f0;
+    }
+    
+    /* High Density Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    /* Range slider custom dark styling */
+    input[type=range] {
+      accent-color: #3b82f6;
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-full {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .bg-slate-900\/40, .bg-slate-900\/60, .bg-slate-950 {
+        background: #ffffff !important;
+        border-color: #cbd5e1 !important;
+        color: #000000 !important;
+      }
+      .text-white, .text-slate-200, .text-slate-300 {
+        color: #0f172a !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#020617] text-slate-200 flex flex-col antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- Top Navigation Bar: High Density Dark Header -->
+  <header id="main-header" class="bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-6 h-14 flex items-center justify-between">
+      
+      <!-- Logo & Title -->
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 shadow-sm shadow-blue-950">
+          <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-sm font-bold tracking-tight text-white flex items-center gap-1.5">
+              EduMetrics <span class="text-slate-500 font-normal">|</span> Student Performance Dashboard
+            </h1>
+            <span class="text-[10px] px-1.5 py-0.2 font-mono font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded">
+              v2.4 DENSITY
+            </span>
+          </div>
+          <p class="text-[10px] text-slate-400 font-mono">Educational Data Analysis & Weighted Points Engine</p>
+        </div>
+      </div>
+
+      <!-- Telemetry & Header Action Controls -->
+      <div class="flex items-center space-x-2 sm:space-x-3 no-print">
+        
+        <!-- System Telemetry Indicators -->
+        <div class="hidden xl:flex items-center gap-4 text-right pr-2 border-r border-slate-800 text-[10px]">
+          <div>
+            <span class="text-slate-500 uppercase tracking-wider font-semibold block text-[9px]">ENGINE</span>
+            <span class="text-slate-300 font-mono">WEIGHTED Σ×10</span>
+          </div>
+          <div>
+            <span class="text-slate-500 uppercase tracking-wider font-semibold block text-[9px]">SYSTEM STATUS</span>
+            <span class="text-emerald-400 font-mono flex items-center gap-1 font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> OPTIMIZED
+            </span>
+          </div>
+        </div>
+
+        <!-- Preset Profiles Selector -->
+        <div class="relative inline-block text-left">
+          <div class="flex items-center bg-slate-900/80 p-0.5 rounded-lg border border-slate-800 text-xs">
+            <span class="text-[10px] font-mono text-slate-500 uppercase px-2 hidden md:inline">PRESETS:</span>
+            <button id="btn-preset-allrounder" onclick="loadPreset('allRounder')" class="px-2 py-1 text-xs font-medium rounded-md bg-blue-600 text-white shadow-xs transition-colors">
+              🌟 All-Rounder
+            </button>
+            <button id="btn-preset-academic" onclick="loadPreset('academicFocus')" class="px-2 py-1 text-xs font-medium rounded-md text-slate-400 hover:text-slate-200 transition-colors">
+              📚 Academic
+            </button>
+            <button id="btn-preset-sports" onclick="loadPreset('sportsStar')" class="px-2 py-1 text-xs font-medium rounded-md text-slate-400 hover:text-slate-200 transition-colors">
+              🏆 Athlete
+            </button>
+            <button id="btn-preset-innovator" onclick="loadPreset('creativeInnovator')" class="px-2 py-1 text-xs font-medium rounded-md text-slate-400 hover:text-slate-200 transition-colors hidden sm:inline">
+              💡 Innovator
+            </button>
+            <button id="btn-preset-support" onclick="loadPreset('needsSupport')" class="px-2 py-1 text-xs font-medium rounded-md text-slate-400 hover:text-slate-200 transition-colors hidden lg:inline">
+              🎯 Support
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Weights Toggle -->
+        <button id="btn-toggle-weights" onclick="toggleWeightsModal(true)" class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-slate-300 bg-slate-900 hover:bg-slate-800 border border-slate-700/80 rounded-lg transition-colors shadow-xs" title="Customize Point Weights">
+          <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+          </svg>
+          <span>Weights</span>
+        </button>
+
+        <!-- Print / PDF Button -->
+        <button id="btn-print-report" onclick="window.print()" class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-slate-300 bg-slate-900 hover:bg-slate-800 border border-slate-700/80 rounded-lg transition-colors shadow-xs" title="Print Scorecard">
+          <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          <span class="hidden sm:inline">Export</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-6 py-4 flex-1 w-full space-y-4">
+    
+    <!-- Top Active Profile & Global Status Strip -->
+    <div id="student-summary-strip" class="bg-slate-900/60 border border-slate-800 rounded-xl p-3.5 shadow-sm flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <div id="avatar-container" class="w-10 h-10 rounded-lg bg-blue-950 border border-blue-500/40 text-blue-300 font-mono font-bold text-sm flex items-center justify-center shadow-xs">
+          AR
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 id="header-student-name" class="text-sm font-bold text-white tracking-tight">Alex Rivera</h2>
+            <span id="header-student-grade" class="text-[10px] font-mono font-semibold px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded border border-slate-700">12-A (STEM)</span>
+            <span id="header-student-id" class="text-[10px] font-mono text-slate-400">ID: #STU-2024-089</span>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-0.5">Evaluation: <span class="font-mono text-slate-300">AY 2025–2026</span> &bull; 6 Weighted Pillars &bull; Standard Calibration</p>
+        </div>
+      </div>
+
+      <!-- Quick Status Indicators -->
+      <div class="flex items-center gap-3">
+        <div class="text-right">
+          <span class="text-[10px] uppercase font-mono text-slate-400 tracking-wider block">INDEX POINTS</span>
+          <span id="header-score-indicator" class="text-xs font-mono font-bold text-blue-400">865.0 / 1000 Pts</span>
+        </div>
+        <div id="header-tier-pill" class="px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-950/60 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 font-mono">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Proficient Achiever</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two-Column Grid: Left (Data Entry) & Right (Visual Analytics & Insights) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+
+      <!-- ========================================== -->
+      <!-- LEFT COLUMN: Data Input & Profile Controls (5 cols) -->
+      <!-- ========================================== -->
+      <div class="lg:col-span-5 space-y-3.5">
+        
+        <!-- Student Profile Card -->
+        <div id="card-student-profile" class="bg-slate-900/50 border border-slate-800 rounded-xl p-3.5 shadow-xs">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+            <h3 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              Student Profile
+            </h3>
+            <button onclick="resetToBlank()" class="text-[10px] text-slate-400 hover:text-slate-200 font-mono">RESET PROFILE</button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div class="sm:col-span-2">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" for="input-student-name">Full Name</label>
+              <input type="text" id="input-student-name" value="Alex Rivera" class="w-full bg-slate-950 border border-slate-700/80 rounded-md px-2.5 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition font-sans" placeholder="e.g. Alex Rivera" oninput="handleProfileChange()" />
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" for="input-student-id">Student ID</label>
+              <input type="text" id="input-student-id" value="STU-2024-089" class="w-full bg-slate-950 border border-slate-700/80 rounded-md px-2.5 py-1.5 text-xs text-slate-100 placeholder-slate-500 font-mono focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" placeholder="e.g. STU-2024-089" oninput="handleProfileChange()" />
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" for="input-student-grade">Grade / Class</label>
+              <input type="text" id="input-student-grade" value="12-A (STEM)" class="w-full bg-slate-950 border border-slate-700/80 rounded-md px-2.5 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition font-sans" placeholder="e.g. 12-A (STEM)" oninput="handleProfileChange()" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Header: Metric Inputs -->
+        <div class="flex items-center justify-between px-1">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 font-mono">METRIC INPUT MODULES</span>
+          <span class="text-[10px] font-mono text-slate-500">SCALE: 0–100 NORMALIZED</span>
+        </div>
+
+        <!-- Dimension 1: Academic Performance -->
+        <div id="card-input-academic" class="bg-slate-900/50 border border-slate-800 rounded-xl p-3.5 shadow-xs transition hover:border-slate-700">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-md bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-center">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-200">Academic Performance</h4>
+                <p class="text-[10px] text-slate-400 font-mono">Weight: <span class="font-bold text-blue-400 weight-display-academic">30%</span> (Max 300 pts)</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span id="score-badge-academic" class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-blue-500/10 text-blue-400 border border-blue-500/30">
+                88 / 100
+              </span>
+            </div>
+          </div>
+
+          <!-- Academic Scale Toggle -->
+          <div class="flex items-center justify-between bg-slate-950/60 p-1.5 rounded-lg mb-2.5 text-xs border border-slate-800/80">
+            <span class="text-slate-400 text-[10px] font-mono">INPUT SCALE:</span>
+            <div class="flex gap-1 bg-slate-900 p-0.5 border border-slate-700/80 rounded-md">
+              <button id="btn-scale-pct" onclick="setAcademicScale('percentage')" class="px-2 py-0.5 text-[10px] font-mono font-semibold rounded bg-blue-600 text-white transition">0–100 %</button>
+              <button id="btn-scale-gpa" onclick="setAcademicScale('gpa')" class="px-2 py-0.5 text-[10px] font-mono font-medium text-slate-400 rounded hover:bg-slate-800 transition">0–10 GPA</button>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div>
+              <div class="flex justify-between text-[11px] mb-1">
+                <span id="label-academic-input" class="font-medium text-slate-300">Cumulative Marks (%)</span>
+                <span id="val-academic-input" class="font-mono font-bold text-blue-400">88 %</span>
+              </div>
+              <input type="range" id="range-academic" min="0" max="100" value="88" step="1" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="updateCalculations()" />
+              <div class="h-1 w-full bg-slate-800/80 rounded-full overflow-hidden mt-1.5">
+                <div id="minibar-academic" class="h-full bg-blue-500 transition-all duration-300" style="width: 88%"></div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/60 text-[10px] font-mono text-slate-400">
+              <div>Percentile: <span id="academic-percentile" class="font-semibold text-slate-200">Top 15%</span></div>
+              <div class="text-right">Grade: <span id="academic-letter-grade" class="font-semibold text-blue-400">A (Honors)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dimension 2: Sports & Athletics -->
+        <div id="card-input-sports" class="bg-slate-900/50 border border-slate-800 rounded-xl p-3.5 shadow-xs transition hover:border-slate-700">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-md bg-orange-500/10 border border-orange-500/30 text-orange-400 flex items-center justify-center">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-200">Sports & Athletics</h4>
+                <p class="text-[10px] text-slate-400 font-mono">Weight: <span class="font-bold text-orange-400 weight-display-sports">15%</span> (Max 150 pts)</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span id="score-badge-sports" class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-orange-500/10 text-orange-400 border border-orange-500/30">
+                78 / 100
+              </span>
+            </div>
+          </div>
+
+          <div class="space-y-2.5">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" for="select-sports-level">Participation Level</label>
+              <select id="select-sports-level" class="w-full bg-slate-950 border border-slate-700/80 rounded-md px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500" onchange="updateCalculations()">
+                <option value="0">None / Minimal (0 pts)</option>
+                <option value="40">Intra-School / House Level (40 pts)</option>
+                <option value="65">District / Zonal Level (65 pts)</option>
+                <option value="85" selected>State / Regional Championship (85 pts)</option>
+                <option value="100">National / International (100 pts)</option>
+              </select>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] mb-1">
+                <span class="font-medium text-slate-300">Medals & Accolades Bonus</span>
+                <span id="val-sports-medals" class="font-mono font-bold text-orange-400">2 Medals (+10 pts)</span>
+              </div>
+              <input type="range" id="range-sports-medals" min="0" max="4" value="2" step="1" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="updateCalculations()" />
+              <div class="h-1 w-full bg-slate-800/80 rounded-full overflow-hidden mt-1.5">
+                <div id="minibar-sports" class="h-full bg-orange-500 transition-all duration-300" style="width: 78%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dimension 3: Projects & Technical Innovation -->
+        <div id="card-input-projects" class="bg-slate-900/50 border border-slate-800 rounded-xl p-3.5 shadow-xs transition hover:border-slate-700">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-md bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-200">Projects & Research</h4>
+                <p class="text-[10px] text-slate-400 font-mono">Weight: <span class="font-bold text-purple-400 weight-display-projects">20%</span> (Max 200 pts)</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span id="score-badge-projects" class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-purple-500/10 text-purple-400 border border-purple-500/30">
+                92 / 100
+              </span>
+            </div>
+          </div>
+
+          <div class="space-y-2.5">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" for="select-project-complexity">Complexity</label>
+                <select id="select-project-complexity" class="w-full bg-slate-950 border border-slate-700/80 rounded-md px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-purple-500" onchange="updateCalculations()">
+                  <option value="60">Basic / Standard</option>
+                  <option value="80">Intermediate</option>
+                  <option value="95" selected>Advanced / Published</option>
+                  <option value="100">Novel / Capstone</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" for="select-project-impact">Impact & Utility</label>
+                <select id="select-project-impact" class="w-full bg-slate-950 border border-slate-700/80 rounded-md px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-purple-500" onchange="updateCalculations()">
+                  <option value="65">Classroom Demo</option>
+                  <option value="85" selected>Institutional</option>
+                  <option value="95">Open Source / Regional</option>
+                  <option value="100">Commercial / Patent</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] mb-1">
+                <span class="font-medium text-slate-300">Completion & Documentation</span>
+                <span id="val-project-completion" class="font-mono font-bold text-purple-400">95 %</span>
+              </div>
+              <input type="range" id="range-project-completion" min="40" max="100" value="95" step="1" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="updateCalculations()" />
+              <div class="h-1 w-full bg-slate-800/80 rounded-full overflow-hidden mt-1.5">
+                <div id="minibar-projects" class="h-full bg-purple-500 transition-all duration-300" style="width: 92%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dimension 4: Club & Extracurricular Leadership -->
+        <div id="card-input-clubs" class="bg-slate-900/50 border border-slate-800 rounded-xl p-3.5 shadow-xs transition hover:border-slate-700">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-md bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-200">Clubs & Extracurriculars</h4>
+                <p class="text-[10px] text-slate-400 font-mono">Weight: <span class="font-bold text-cyan-400 weight-display-clubs">10%</span> (Max 100 pts)</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span id="score-badge-clubs" class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                85 / 100
+              </span>
+            </div>
+          </div>
+
+          <div class="space-y-2.5">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" for="select-club-role">Organizational Role</label>
+              <select id="select-club-role" class="w-full bg-slate-950 border border-slate-700/80 rounded-md px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-500" onchange="updateCalculations()">
+                <option value="20">Passive / Attendee (20 pts)</option>
+                <option value="50">Active Club Member (50 pts)</option>
+                <option value="80" selected>Club Lead / Committee Head (80 pts)</option>
+                <option value="100">President / Lead Organizer (100 pts)</option>
+              </select>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] mb-1">
+                <span class="font-medium text-slate-300">Active Service / Event Hours</span>
+                <span id="val-club-hours" class="font-mono font-bold text-cyan-400">45 hrs (90%)</span>
+              </div>
+              <input type="range" id="range-club-hours" min="0" max="60" value="45" step="1" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="updateCalculations()" />
+              <div class="h-1 w-full bg-slate-800/80 rounded-full overflow-hidden mt-1.5">
+                <div id="minibar-clubs" class="h-full bg-cyan-500 transition-all duration-300" style="width: 85%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dimension 5: Communication & Soft Skills -->
+        <div id="card-input-comm" class="bg-slate-900/50 border border-slate-800 rounded-xl p-3.5 shadow-xs transition hover:border-slate-700">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-md bg-pink-500/10 border border-pink-500/30 text-pink-400 flex items-center justify-center">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-200">Communication & Soft Skills</h4>
+                <p class="text-[10px] text-slate-400 font-mono">Weight: <span class="font-bold text-pink-400 weight-display-comm">10%</span> (Max 100 pts)</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span id="score-badge-comm" class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-pink-500/10 text-pink-400 border border-pink-500/30">
+                87 / 100
+              </span>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div>
+              <div class="flex justify-between items-center text-[11px] mb-1">
+                <span class="font-medium text-slate-300">Presentation & Public Speaking</span>
+                <span id="val-star-presentation" class="font-mono font-bold text-pink-400">4.5 / 5.0</span>
+              </div>
+              <input type="range" id="range-star-pres" min="1" max="5" step="0.5" value="4.5" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="updateCalculations()" />
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center text-[11px] mb-1">
+                <span class="font-medium text-slate-300">Teamwork & Collaboration</span>
+                <span id="val-star-teamwork" class="font-mono font-bold text-pink-400">4.5 / 5.0</span>
+              </div>
+              <input type="range" id="range-star-team" min="1" max="5" step="0.5" value="4.5" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="updateCalculations()" />
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center text-[11px] mb-1">
+                <span class="font-medium text-slate-300">Leadership & Initiative</span>
+                <span id="val-star-leadership" class="font-mono font-bold text-pink-400">4.0 / 5.0</span>
+              </div>
+              <input type="range" id="range-star-lead" min="1" max="5" step="0.5" value="4.0" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="updateCalculations()" />
+            </div>
+
+            <div class="h-1 w-full bg-slate-800/80 rounded-full overflow-hidden mt-1">
+              <div id="minibar-comm" class="h-full bg-pink-500 transition-all duration-300" style="width: 87%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dimension 6: Attendance & Discipline -->
+        <div id="card-input-attendance" class="bg-slate-900/50 border border-slate-800 rounded-xl p-3.5 shadow-xs transition hover:border-slate-700">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-200">Attendance & Discipline</h4>
+                <p class="text-[10px] text-slate-400 font-mono">Weight: <span class="font-bold text-emerald-400 weight-display-attendance">15%</span> (Max 150 pts)</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span id="score-badge-attendance" class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                94% (94 / 100)
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-[11px] mb-1">
+              <span class="font-medium text-slate-300">Official Class Attendance Rate</span>
+              <span id="val-attendance" class="font-mono font-bold text-emerald-400">94 %</span>
+            </div>
+            <input type="range" id="range-attendance" min="0" max="100" value="94" step="1" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="updateCalculations()" />
+            <div class="h-1 w-full bg-slate-800/80 rounded-full overflow-hidden mt-1.5">
+              <div id="minibar-attendance" class="h-full bg-emerald-500 transition-all duration-300" style="width: 94%"></div>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="updateCalculations()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg text-xs uppercase tracking-widest transition-colors font-mono shadow-sm">
+          Recalculate Indices
+        </button>
+
+      </div>
+
+      <!-- ========================================== -->
+      <!-- RIGHT COLUMN: Analytics, Radar Chart & AI Insights (7 cols) -->
+      <!-- ========================================== -->
+      <div class="lg:col-span-7 space-y-4">
+
+        <!-- 4 Top Level KPI Metric Cards Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          
+          <!-- Card 1: Total Points -->
+          <div id="stat-total-points-card" class="bg-slate-900/60 border border-slate-800 rounded-xl p-3.5 shadow-xs relative overflow-hidden">
+            <div class="absolute top-2 right-2 opacity-30">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">Total Points</div>
+            <div class="flex items-baseline gap-1 mt-0.5">
+              <span id="display-total-points" class="text-2xl sm:text-3xl font-extrabold text-white font-mono tracking-tight">865.0</span>
+              <span class="text-xs font-mono text-slate-500">/ 1000</span>
+            </div>
+            <div class="mt-2 text-[10px] font-mono text-emerald-400 flex items-center gap-1 font-semibold">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+              <span id="display-overall-pct">86.5%</span> Index Score
+            </div>
+            <div class="w-full bg-slate-800 h-1 rounded-full mt-2 overflow-hidden">
+              <div id="bar-total-points" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 86.5%"></div>
+            </div>
+          </div>
+
+          <!-- Card 2: Performance Tier -->
+          <div id="stat-tier-card" class="bg-slate-900/60 border border-slate-800 rounded-xl p-3.5 shadow-xs relative overflow-hidden">
+            <div class="absolute top-2 right-2 opacity-30">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">Performance Tier</div>
+            <div id="display-tier-name" class="text-sm sm:text-base font-bold text-emerald-400 mt-1 uppercase tracking-tight font-mono">
+              Proficient
+            </div>
+            <div id="display-tier-badge" class="mt-1 inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              High Achiever
+            </div>
+            <p id="display-tier-desc" class="text-[10px] font-mono text-slate-500 mt-2 truncate">750–899 pts bracket</p>
+          </div>
+
+          <!-- Card 3: Top Strength Area -->
+          <div id="stat-strength-card" class="bg-slate-900/60 border border-slate-800 rounded-xl p-3.5 shadow-xs relative overflow-hidden">
+            <div class="absolute top-2 right-2 opacity-30">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.27 1.27L3 12l5.813 1.912a2 2 0 0 1 1.27 1.27L12 21l1.912-5.813a2 2 0 0 1 1.27-1.27L21 12l-5.813-1.912a2 2 0 0 1-1.27-1.27L12 3Z"/>
+              </svg>
+            </div>
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">Top Strength</div>
+            <div id="display-top-strength-name" class="text-sm sm:text-base font-bold text-purple-300 mt-1 truncate">
+              Attendance
+            </div>
+            <div class="flex items-center gap-1.5 mt-1">
+              <span id="display-top-strength-score" class="text-xs font-mono font-bold text-slate-200">94 / 100</span>
+              <span class="text-[9px] font-mono text-purple-400 bg-purple-500/10 px-1 py-0.2 rounded border border-purple-500/20">DOMINANT</span>
+            </div>
+            <p class="text-[10px] font-mono text-slate-500 mt-2 truncate">Highest dimension</p>
+          </div>
+
+          <!-- Card 4: Primary Growth Area -->
+          <div id="stat-growth-card" class="bg-slate-900/60 border border-slate-800 rounded-xl p-3.5 shadow-xs relative overflow-hidden">
+            <div class="absolute top-2 right-2 opacity-30">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2">
+                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+            </div>
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">Growth Area</div>
+            <div id="display-growth-area-name" class="text-sm sm:text-base font-bold text-orange-400 mt-1 truncate">
+              Sports & Athletics
+            </div>
+            <div class="flex items-center gap-1.5 mt-1">
+              <span id="display-growth-area-score" class="text-xs font-mono font-bold text-slate-200">78 / 100</span>
+              <span class="text-[9px] font-mono text-orange-400 bg-orange-500/10 px-1 py-0.2 rounded border border-orange-500/20">OPPORTUNITY</span>
+            </div>
+            <p class="text-[10px] font-mono text-slate-500 mt-2 truncate">Potential lift target</p>
+          </div>
+
+        </div>
+
+        <!-- Radar / Spider Chart Card -->
+        <div id="card-radar-chart" class="bg-slate-900/40 border border-slate-800 rounded-xl p-4 shadow-xs">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5 mb-3">
+            <div>
+              <h3 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest flex items-center gap-1.5 font-mono">
+                <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                </svg>
+                Dimensional Score Balance (Hexagonal Mapping)
+              </h3>
+              <p class="text-[10px] text-slate-500 font-mono">Normalized balance across 6 multi-dimensional categories</p>
+            </div>
+
+            <!-- Benchmark Toggle -->
+            <div class="flex items-center gap-2 text-xs">
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="toggle-benchmark" class="sr-only peer" checked onchange="toggleBenchmarkLine()">
+                <div class="w-7 h-3.5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-2.5 after:w-2.5 after:transition-all peer-checked:bg-blue-600"></div>
+                <span class="ml-2 text-[10px] font-mono text-slate-400">Target (90 Benchmark)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Canvas Container -->
+          <div class="relative w-full aspect-square max-h-[340px] mx-auto flex items-center justify-center">
+            <canvas id="studentRadarChart"></canvas>
+          </div>
+
+          <!-- Radar Chart Legend / Insight Note -->
+          <div class="mt-2.5 pt-2.5 border-t border-slate-800/80 flex flex-wrap items-center justify-between text-[10px] font-mono text-slate-500 gap-2">
+            <div class="flex items-center gap-4">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block"></span>
+                <span class="font-medium text-slate-300">Active Profile</span>
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-sm bg-slate-600 inline-block"></span>
+                <span>Exemplary Target (90)</span>
+              </span>
+            </div>
+            <span id="balance-rating-pill" class="text-[9px] font-mono font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+              HARMONIC DISTRIBUTION
+            </span>
+          </div>
+        </div>
+
+        <!-- Detailed Score Breakdown Table -->
+        <div id="card-breakdown-table" class="bg-slate-900/40 border border-slate-800 rounded-xl p-4 shadow-xs">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-2.5">
+            <div>
+              <h3 class="text-[11px] font-bold text-slate-300 uppercase tracking-widest flex items-center gap-1.5 font-mono">
+                <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Detailed Index Breakdown & Matrix
+              </h3>
+            </div>
+            <span class="text-[10px] font-mono text-slate-500">Σ (Score × Weight) × 10</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead class="border-b border-slate-800 text-[9px] font-bold text-slate-500 uppercase tracking-wider font-mono">
+                <tr>
+                  <th class="pb-2">Performance Category</th>
+                  <th class="pb-2 text-center">Sub-Metrics</th>
+                  <th class="pb-2 text-right">Raw Score</th>
+                  <th class="pb-2 text-right">Weight</th>
+                  <th class="pb-2 text-right">Index Pts</th>
+                  <th class="pb-2 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody id="breakdown-table-body" class="text-xs text-slate-300 divide-y divide-slate-800/50 font-sans">
+                <!-- Injected via JavaScript -->
+              </tbody>
+              <tfoot class="border-t-2 border-slate-700 bg-slate-950/40 text-slate-200">
+                <tr>
+                  <td class="py-2.5 px-2 text-[10px] font-bold uppercase text-slate-300 font-mono">Total Weighted Aggregate</td>
+                  <td class="py-2.5 px-2 text-center text-slate-500 font-mono text-[10px]">6 Dimensions</td>
+                  <td id="tfoot-avg-score" class="py-2.5 px-2 text-right font-mono font-bold text-slate-300">87.3</td>
+                  <td id="tfoot-total-weight" class="py-2.5 px-2 text-right font-mono font-bold text-blue-400">100%</td>
+                  <td id="tfoot-total-points" class="py-2.5 px-2 text-right text-sm font-extrabold text-white font-mono">865.0</td>
+                  <td class="py-2.5 px-2 text-center">
+                    <span id="tfoot-tier-badge" class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      Proficient
+                    </span>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- Automated AI Insights Engine Card -->
+        <div id="card-ai-insights" class="bg-blue-950/20 border border-blue-500/30 rounded-xl p-4 shadow-sm relative overflow-hidden">
+          
+          <div class="flex items-center gap-2 mb-3 border-b border-slate-800/80 pb-2">
+            <div class="w-1.5 h-4 bg-blue-500 rounded-full"></div>
+            <h2 class="text-[10px] font-bold uppercase text-blue-400 tracking-widest font-mono">AI Powered Actionable Insights & Pedagogical Diagnosis</h2>
+          </div>
+
+          <!-- Narrative Summary -->
+          <div class="bg-slate-950/70 border border-slate-800 rounded-lg p-3 mb-3 text-xs leading-relaxed text-slate-300">
+            <span class="text-[10px] font-mono font-bold text-blue-400 block uppercase mb-1">Pedagogical Evaluation:</span>
+            <p id="ai-narrative-summary">
+              Student displays exceptional holistic capability with strong academic rigor and project execution.
+            </p>
+          </div>
+
+          <!-- 2 Strengths & 2 Opportunities -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            
+            <!-- Key Strengths -->
+            <div class="bg-slate-950/50 border border-emerald-500/20 rounded-lg p-3 space-y-2">
+              <p class="text-[10px] font-bold text-emerald-400 uppercase font-mono mb-1 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Key Strengths
+              </p>
+              
+              <div id="ai-strength-1" class="text-xs text-slate-300 space-y-0.5">
+                <div class="text-[11px] font-semibold text-white font-mono">1. Projects & Innovation (92.0 / 100)</div>
+                <p class="text-[11px] text-slate-400 leading-normal">Demonstrates superior technical problem-solving and documentation completeness.</p>
+              </div>
+
+              <div id="ai-strength-2" class="text-xs text-slate-300 space-y-0.5 pt-1.5 border-t border-slate-800/60">
+                <div class="text-[11px] font-semibold text-white font-mono">2. Attendance & Discipline (94.0 / 100)</div>
+                <p class="text-[11px] text-slate-400 leading-normal">Maintains steady classroom presence and punctuality.</p>
+              </div>
+            </div>
+
+            <!-- Improvement Opportunities -->
+            <div class="bg-slate-950/50 border border-orange-500/20 rounded-lg p-3 space-y-2">
+              <p class="text-[10px] font-bold text-orange-400 uppercase font-mono mb-1 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span> Improvement Areas
+              </p>
+
+              <div id="ai-growth-1" class="text-xs text-slate-300 space-y-0.5">
+                <div class="text-[11px] font-semibold text-orange-300 font-mono">1. Revitalize Sports & Athletics (78.0 / 100)</div>
+                <p class="text-[11px] text-slate-400 leading-normal">Participate in structured district training camps to unlock higher bracket bonuses.</p>
+              </div>
+
+              <div id="ai-growth-2" class="text-xs text-slate-300 space-y-0.5 pt-1.5 border-t border-slate-800/60">
+                <div class="text-[11px] font-semibold text-orange-300 font-mono">2. Boost Club Leadership (85.0 / 100)</div>
+                <p class="text-[11px] text-slate-400 leading-normal">Target a designated committee lead or presidential role to maximize impact.</p>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- High Density Telemetry Footer -->
+  <footer class="mt-8 border-t border-slate-800/80 py-3.5 px-4 text-center text-[9px] uppercase tracking-widest font-mono text-slate-500 no-print">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>&copy; 2026 EDUMETRICS ANALYTICS CORP &bull; HIGH DENSITY DASHBOARD</p>
+      <div class="flex gap-4 sm:gap-6 text-slate-400">
+        <span>SECURE LINK: ENCRYPTED</span>
+        <span>LATENCY: 0.12ms</span>
+        <span>SERVER: US-EAST-01</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- MODAL: Custom Weights Adjustment (Dark Themed) -->
+  <!-- ========================================== -->
+  <div id="modal-weights" class="fixed inset-0 bg-slate-950/80 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-2xl max-w-lg w-full p-5 shadow-2xl border border-slate-800">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white font-mono uppercase tracking-wider">Custom Dimension Weightings</h3>
+            <p class="text-[10px] text-slate-400 font-mono">Fine-tune weight distribution across 6 performance pillars</p>
+          </div>
+        </div>
+        <button onclick="toggleWeightsModal(false)" class="text-slate-400 hover:text-slate-200 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Weight Sliders List -->
+      <div class="space-y-3 mb-4 font-mono text-xs">
+        <!-- Weight: Academics -->
+        <div>
+          <div class="flex justify-between text-[11px] font-semibold text-slate-300 mb-1">
+            <span>Academics</span>
+            <span id="mw-val-academics" class="text-blue-400">30%</span>
+          </div>
+          <input type="range" id="mw-range-academics" min="5" max="60" value="30" step="5" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="handleWeightChange()" />
+        </div>
+
+        <!-- Weight: Projects -->
+        <div>
+          <div class="flex justify-between text-[11px] font-semibold text-slate-300 mb-1">
+            <span>Projects & Research</span>
+            <span id="mw-val-projects" class="text-purple-400">20%</span>
+          </div>
+          <input type="range" id="mw-range-projects" min="5" max="60" value="20" step="5" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="handleWeightChange()" />
+        </div>
+
+        <!-- Weight: Attendance -->
+        <div>
+          <div class="flex justify-between text-[11px] font-semibold text-slate-300 mb-1">
+            <span>Attendance & Discipline</span>
+            <span id="mw-val-attendance" class="text-emerald-400">15%</span>
+          </div>
+          <input type="range" id="mw-range-attendance" min="5" max="60" value="15" step="5" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="handleWeightChange()" />
+        </div>
+
+        <!-- Weight: Sports -->
+        <div>
+          <div class="flex justify-between text-[11px] font-semibold text-slate-300 mb-1">
+            <span>Sports & Athletics</span>
+            <span id="mw-val-sports" class="text-orange-400">15%</span>
+          </div>
+          <input type="range" id="mw-range-sports" min="5" max="60" value="15" step="5" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="handleWeightChange()" />
+        </div>
+
+        <!-- Weight: Clubs -->
+        <div>
+          <div class="flex justify-between text-[11px] font-semibold text-slate-300 mb-1">
+            <span>Club Activities</span>
+            <span id="mw-val-clubs" class="text-cyan-400">10%</span>
+          </div>
+          <input type="range" id="mw-range-clubs" min="5" max="50" value="10" step="5" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="handleWeightChange()" />
+        </div>
+
+        <!-- Weight: Communication -->
+        <div>
+          <div class="flex justify-between text-[11px] font-semibold text-slate-300 mb-1">
+            <span>Communication & Soft Skills</span>
+            <span id="mw-val-comm" class="text-pink-400">10%</span>
+          </div>
+          <input type="range" id="mw-range-comm" min="5" max="50" value="10" step="5" class="w-full h-1 bg-slate-800 rounded-lg cursor-pointer" oninput="handleWeightChange()" />
+        </div>
+      </div>
+
+      <!-- Sum Check Status Bar -->
+      <div id="modal-weight-sum-box" class="flex items-center justify-between p-2.5 rounded-lg bg-slate-950 border border-slate-800 mb-4 text-xs font-mono">
+        <span class="font-medium text-slate-400 uppercase">Total Sum of Weights:</span>
+        <span id="modal-weight-total" class="font-extrabold text-emerald-400 text-sm">100%</span>
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="flex items-center justify-between gap-3 font-mono">
+        <button onclick="resetWeightsToDefault()" class="px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border border-slate-700/80 rounded-lg hover:bg-slate-800 transition">
+          Reset Defaults
+        </button>
+        <button onclick="toggleWeightsModal(false)" class="px-4 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition shadow-xs">
+          Apply & Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT: Engine, Calculations & Chart.js -->
+  <!-- ========================================== -->
+  <script>
+    /**
+     * EduMetrics Core State & Data Models
+     */
+    const state = {
+      // Student Profile
+      student: {
+        name: 'Alex Rivera',
+        id: 'STU-2024-089',
+        grade: '12-A (STEM)',
+      },
+      // Academic Input settings
+      academicScale: 'percentage', // 'percentage' (0-100) or 'gpa' (0-10)
+      rawAcademicValue: 88,
+
+      // Active Weightings (defaults must sum to 100%)
+      weights: {
+        academics: 0.30,
+        projects: 0.20,
+        attendance: 0.15,
+        sports: 0.15,
+        clubs: 0.10,
+        comm: 0.10,
+      },
+
+      // Normalized 0-100 sub-scores
+      scores: {
+        academics: 88,
+        sports: 78,
+        projects: 92,
+        clubs: 85,
+        comm: 87,
+        attendance: 94,
+      },
+
+      // Summary Output
+      totalPoints: 865.0,
+      overallPercentage: 86.5,
+      tier: 'Proficient',
+      tierBadge: 'High Achiever',
+      topStrength: 'Attendance',
+      growthArea: 'Sports & Athletics',
+      showBenchmark: true,
+    };
+
+    /**
+     * Preset Student Profiles
+     */
+    const PRESETS = {
+      allRounder: {
+        name: 'Alex Rivera',
+        id: 'STU-2024-089',
+        grade: '12-A (STEM)',
+        academicVal: 88,
+        sportsLevel: 85,
+        sportsMedals: 2,
+        projectComplexity: 95,
+        projectImpact: 85,
+        projectCompletion: 95,
+        clubRole: 80,
+        clubHours: 45,
+        starPres: 4.5,
+        starTeam: 4.5,
+        starLead: 4.0,
+        attendance: 94,
+      },
+      academicFocus: {
+        name: 'Marcus Chen',
+        id: 'STU-2024-441',
+        grade: '12-AP',
+        academicVal: 98,
+        sportsLevel: 40,
+        sportsMedals: 0,
+        projectComplexity: 100,
+        projectImpact: 95,
+        projectCompletion: 98,
+        clubRole: 50,
+        clubHours: 20,
+        starPres: 4.0,
+        starTeam: 4.0,
+        starLead: 3.5,
+        attendance: 98,
+      },
+      sportsStar: {
+        name: 'Jordan Smith',
+        id: 'STU-2024-102',
+        grade: '11-B',
+        academicVal: 74,
+        sportsLevel: 100,
+        sportsMedals: 4,
+        projectComplexity: 60,
+        projectImpact: 65,
+        projectCompletion: 80,
+        clubRole: 80,
+        clubHours: 35,
+        starPres: 4.0,
+        starTeam: 5.0,
+        starLead: 5.0,
+        attendance: 88,
+      },
+      creativeInnovator: {
+        name: 'Aisha Patel',
+        id: 'STU-2024-319',
+        grade: '11-Tech',
+        academicVal: 82,
+        sportsLevel: 40,
+        sportsMedals: 1,
+        projectComplexity: 100,
+        projectImpact: 100,
+        projectCompletion: 92,
+        clubRole: 100,
+        clubHours: 55,
+        starPres: 5.0,
+        starTeam: 4.5,
+        starLead: 4.5,
+        attendance: 91,
+      },
+      needsSupport: {
+        name: 'Devon Lee',
+        id: 'STU-2024-550',
+        grade: '10-C',
+        academicVal: 58,
+        sportsLevel: 40,
+        sportsMedals: 0,
+        projectComplexity: 60,
+        projectImpact: 65,
+        projectCompletion: 60,
+        clubRole: 20,
+        clubHours: 10,
+        starPres: 2.5,
+        starTeam: 3.0,
+        starLead: 2.0,
+        attendance: 68,
+      }
+    };
+
+    let radarChartInstance = null;
+
+    /**
+     * Initialize Application on DOM Ready
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+      initRadarChart();
+      updateCalculations();
+    });
+
+    /**
+     * Handle Profile Metadata Changes
+     */
+    function handleProfileChange() {
+      state.student.name = document.getElementById('input-student-name').value || 'Student';
+      state.student.id = document.getElementById('input-student-id').value || 'STU-0000';
+      state.student.grade = document.getElementById('input-student-grade').value || 'Grade N/A';
+
+      document.getElementById('header-student-name').textContent = state.student.name;
+      document.getElementById('header-student-id').textContent = `ID: #${state.student.id}`;
+      document.getElementById('header-student-grade').textContent = state.student.grade;
+
+      // Update Avatar Initials
+      const initials = state.student.name
+        .split(' ')
+        .filter(n => n.length > 0)
+        .map(n => n[0].toUpperCase())
+        .slice(0, 2)
+        .join('') || 'ST';
+      document.getElementById('avatar-container').textContent = initials;
+    }
+
+    /**
+     * Switch Academic Scale (Percentage vs GPA)
+     */
+    function setAcademicScale(scale) {
+      state.academicScale = scale;
+      const range = document.getElementById('range-academic');
+      const label = document.getElementById('label-academic-input');
+      const btnPct = document.getElementById('btn-scale-pct');
+      const btnGpa = document.getElementById('btn-scale-gpa');
+
+      if (scale === 'gpa') {
+        range.min = '0';
+        range.max = '10';
+        range.step = '0.1';
+        range.value = (state.scores.academics / 10).toFixed(1);
+        label.textContent = 'Cumulative GPA (0–10 Scale)';
+        
+        btnGpa.className = 'px-2 py-0.5 text-[10px] font-mono font-semibold rounded bg-blue-600 text-white transition';
+        btnPct.className = 'px-2 py-0.5 text-[10px] font-mono font-medium text-slate-400 rounded hover:bg-slate-800 transition';
+      } else {
+        range.min = '0';
+        range.max = '100';
+        range.step = '1';
+        range.value = Math.round(state.scores.academics);
+        label.textContent = 'Cumulative Marks (%)';
+
+        btnPct.className = 'px-2 py-0.5 text-[10px] font-mono font-semibold rounded bg-blue-600 text-white transition';
+        btnGpa.className = 'px-2 py-0.5 text-[10px] font-mono font-medium text-slate-400 rounded hover:bg-slate-800 transition';
+      }
+
+      updateCalculations();
+    }
+
+    /**
+     * Core Calculation Engine
+     * Normalizes all input categories to 0–100 scale, executes formula, and updates views
+     */
+    function updateCalculations() {
+      // 1. Academics normalization
+      const rawAcad = parseFloat(document.getElementById('range-academic').value) || 0;
+      let normAcad = rawAcad;
+      if (state.academicScale === 'gpa') {
+        normAcad = Math.min(100, Math.max(0, rawAcad * 10));
+        document.getElementById('val-academic-input').textContent = `${rawAcad.toFixed(1)} / 10.0 GPA`;
+      } else {
+        document.getElementById('val-academic-input').textContent = `${Math.round(rawAcad)} %`;
+      }
+      state.scores.academics = normAcad;
+      document.getElementById('score-badge-academic').textContent = `${Math.round(normAcad)} / 100`;
+      const mbAcad = document.getElementById('minibar-academic');
+      if (mbAcad) mbAcad.style.width = `${Math.round(normAcad)}%`;
+
+      // Academic letter & percentile
+      let letter = 'F';
+      let pctl = 'Bottom 10%';
+      if (normAcad >= 90) { letter = 'A+ (Elite Distinction)'; pctl = 'Top 5%'; }
+      else if (normAcad >= 80) { letter = 'A (Honors)'; pctl = 'Top 15%'; }
+      else if (normAcad >= 70) { letter = 'B (Good Standing)'; pctl = 'Top 35%'; }
+      else if (normAcad >= 60) { letter = 'C (Satisfactory)'; pctl = 'Top 55%'; }
+      else if (normAcad >= 50) { letter = 'D (Pass)'; pctl = 'Top 75%'; }
+      document.getElementById('academic-letter-grade').textContent = letter;
+      document.getElementById('academic-percentile').textContent = pctl;
+
+      // 2. Sports Normalization (Level base + Medals multiplier)
+      const sportsLevelBase = parseFloat(document.getElementById('select-sports-level').value) || 0;
+      const sportsMedals = parseInt(document.getElementById('range-sports-medals').value) || 0;
+      const medalBonus = sportsMedals * 5; // +5 pts per medal
+      const normSports = Math.min(100, Math.max(0, sportsLevelBase + (sportsLevelBase > 0 ? medalBonus : 0)));
+      state.scores.sports = normSports;
+      document.getElementById('val-sports-medals').textContent = `${sportsMedals} Medal${sportsMedals === 1 ? '' : 's'} (+${sportsMedals * 5} pts)`;
+      document.getElementById('score-badge-sports').textContent = `${Math.round(normSports)} / 100`;
+      const mbSports = document.getElementById('minibar-sports');
+      if (mbSports) mbSports.style.width = `${Math.round(normSports)}%`;
+
+      // 3. Projects Normalization (Complexity 40% + Impact 30% + Completion 30%)
+      const projComp = parseFloat(document.getElementById('select-project-complexity').value) || 0;
+      const projImpact = parseFloat(document.getElementById('select-project-impact').value) || 0;
+      const projRate = parseFloat(document.getElementById('range-project-completion').value) || 0;
+      const normProj = Math.min(100, Math.max(0, (projComp * 0.40) + (projImpact * 0.30) + (projRate * 0.30)));
+      state.scores.projects = normProj;
+      document.getElementById('val-project-completion').textContent = `${Math.round(projRate)} %`;
+      document.getElementById('score-badge-projects').textContent = `${Math.round(normProj)} / 100`;
+      const mbProj = document.getElementById('minibar-projects');
+      if (mbProj) mbProj.style.width = `${Math.round(normProj)}%`;
+
+      // 4. Clubs & Extracurriculars (Role base 50% + Hours 50%)
+      const clubRole = parseFloat(document.getElementById('select-club-role').value) || 0;
+      const clubHours = parseFloat(document.getElementById('range-club-hours').value) || 0;
+      const hoursScore = Math.min(100, (clubHours / 50) * 100); // 50 hrs = 100%
+      const normClubs = Math.min(100, Math.max(0, (clubRole * 0.50) + (hoursScore * 0.50)));
+      state.scores.clubs = normClubs;
+      document.getElementById('val-club-hours').textContent = `${clubHours} hrs (${Math.round(hoursScore)}%)`;
+      document.getElementById('score-badge-clubs').textContent = `${Math.round(normClubs)} / 100`;
+      const mbClubs = document.getElementById('minibar-clubs');
+      if (mbClubs) mbClubs.style.width = `${Math.round(normClubs)}%`;
+
+      // 5. Communication & Soft Skills (Average of 3 sub-ratings out of 5 stars converted to 0-100)
+      const presStar = parseFloat(document.getElementById('range-star-pres').value) || 1;
+      const teamStar = parseFloat(document.getElementById('range-star-team').value) || 1;
+      const leadStar = parseFloat(document.getElementById('range-star-lead').value) || 1;
+      document.getElementById('val-star-presentation').textContent = `${presStar.toFixed(1)} / 5.0`;
+      document.getElementById('val-star-teamwork').textContent = `${teamStar.toFixed(1)} / 5.0`;
+      document.getElementById('val-star-leadership').textContent = `${leadStar.toFixed(1)} / 5.0`;
+      const avgStars = (presStar + teamStar + leadStar) / 3;
+      const normComm = (avgStars / 5) * 100;
+      state.scores.comm = normComm;
+      document.getElementById('score-badge-comm').textContent = `${Math.round(normComm)} / 100`;
+      const mbComm = document.getElementById('minibar-comm');
+      if (mbComm) mbComm.style.width = `${Math.round(normComm)}%`;
+
+      // 6. Attendance (Direct %)
+      const attVal = parseFloat(document.getElementById('range-attendance').value) || 0;
+      state.scores.attendance = attVal;
+      document.getElementById('val-attendance').textContent = `${Math.round(attVal)} %`;
+      document.getElementById('score-badge-attendance').textContent = `${Math.round(attVal)}% (${Math.round(attVal)} / 100)`;
+      const mbAtt = document.getElementById('minibar-attendance');
+      if (mbAtt) mbAtt.style.width = `${Math.round(attVal)}%`;
+
+      // ==========================================
+      // Weighted Points Calculation Formula:
+      // Total Points = Σ (Dimension Score * Dimension Weight) * 10
+      // Scaled to 1000 Total Points.
+      // ==========================================
+      const w = state.weights;
+      const weightedSum = (
+        (state.scores.academics * w.academics) +
+        (state.scores.projects * w.projects) +
+        (state.scores.attendance * w.attendance) +
+        (state.scores.sports * w.sports) +
+        (state.scores.clubs * w.clubs) +
+        (state.scores.comm * w.comm)
+      );
+
+      state.totalPoints = Math.round(weightedSum * 10 * 10) / 10; // Scaled to 1000 (1 decimal)
+      state.overallPercentage = Math.round(weightedSum * 10) / 10; // Out of 100%
+
+      // Evaluate Performance Tiers
+      evaluateTier(state.totalPoints);
+
+      // Evaluate Top Strength & Growth Area
+      evaluateStrengthsAndGrowth();
+
+      // Update Summary Cards
+      renderSummaryCards();
+
+      // Re-render Radar Chart
+      updateRadarChart();
+
+      // Re-render Detailed Breakdown Table
+      renderBreakdownTable();
+
+      // Generate AI Insights
+      generateAiInsights();
+    }
+
+    /**
+     * Determine Performance Tier from Total Points
+     */
+    function evaluateTier(points) {
+      if (points >= 900) {
+        state.tier = 'Exemplary';
+        state.tierBadge = 'Elite Scholar';
+        state.tierColor = 'emerald';
+        state.tierDesc = '900–1000 pts bracket (Top 5% Tier)';
+      } else if (points >= 750) {
+        state.tier = 'Proficient';
+        state.tierBadge = 'High Achiever';
+        state.tierColor = 'blue';
+        state.tierDesc = '750–899 pts bracket (Above Average)';
+      } else if (points >= 600) {
+        state.tier = 'Competent';
+        state.tierBadge = 'Good Standing';
+        state.tierColor = 'amber';
+        state.tierDesc = '600–749 pts bracket (Standard Passing)';
+      } else {
+        state.tier = 'Needs Improvement';
+        state.tierBadge = 'Action Plan Required';
+        state.tierColor = 'rose';
+        state.tierDesc = 'Below 600 pts bracket (Intervention Required)';
+      }
+    }
+
+    /**
+     * Evaluate Top Strength and Primary Growth Opportunity
+     */
+    function evaluateStrengthsAndGrowth() {
+      const dimensionNames = {
+        academics: 'Academics',
+        projects: 'Projects & Research',
+        attendance: 'Attendance',
+        sports: 'Sports & Athletics',
+        clubs: 'Club Activities',
+        comm: 'Communication Skills',
+      };
+
+      const sorted = Object.entries(state.scores).sort((a, b) => b[1] - a[1]);
+      state.topStrength = dimensionNames[sorted[0][0]];
+      state.topStrengthScore = Math.round(sorted[0][1]);
+      state.topStrengthKey = sorted[0][0];
+
+      const lowest = sorted[sorted.length - 1];
+      state.growthArea = dimensionNames[lowest[0]];
+      state.growthAreaScore = Math.round(lowest[1]);
+      state.growthAreaKey = lowest[0];
+    }
+
+    /**
+     * Render Top Summary Cards
+     */
+    function renderSummaryCards() {
+      // 1. Total Points
+      document.getElementById('display-total-points').textContent = state.totalPoints.toFixed(1);
+      document.getElementById('display-overall-pct').textContent = `${state.overallPercentage.toFixed(1)}%`;
+      document.getElementById('bar-total-points').style.width = `${Math.min(100, state.overallPercentage)}%`;
+      document.getElementById('header-score-indicator').textContent = `${state.totalPoints.toFixed(1)} / 1000 Pts`;
+
+      // 2. Performance Tier Card
+      const tierEl = document.getElementById('display-tier-name');
+      const badgeEl = document.getElementById('display-tier-badge');
+      const descEl = document.getElementById('display-tier-desc');
+      const headerTierPill = document.getElementById('header-tier-pill');
+
+      tierEl.textContent = state.tier;
+      badgeEl.textContent = state.tierBadge;
+      descEl.textContent = state.tierDesc;
+
+      // Color mapping
+      let colorClass = 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+      let pillClass = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-950/60 text-blue-400 border border-blue-500/30';
+      let dotColor = 'bg-blue-400';
+
+      if (state.tier === 'Exemplary') {
+        colorClass = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+        pillClass = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-950/60 text-emerald-400 border border-emerald-500/30';
+        dotColor = 'bg-emerald-400';
+      } else if (state.tier === 'Competent') {
+        colorClass = 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+        pillClass = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-950/60 text-amber-400 border border-amber-500/30';
+        dotColor = 'bg-amber-400';
+      } else if (state.tier === 'Needs Improvement') {
+        colorClass = 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+        pillClass = 'px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-950/60 text-rose-400 border border-rose-500/30';
+        dotColor = 'bg-rose-400';
+      }
+
+      badgeEl.className = `mt-1 inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-mono font-bold ${colorClass}`;
+      headerTierPill.className = `${pillClass} flex items-center gap-1.5 font-mono`;
+      headerTierPill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full ${dotColor} animate-pulse"></span><span>${state.tier} (${state.tierBadge})</span>`;
+
+      // 3. Top Strength
+      document.getElementById('display-top-strength-name').textContent = state.topStrength;
+      document.getElementById('display-top-strength-score').textContent = `${state.topStrengthScore} / 100`;
+
+      // 4. Growth Area
+      document.getElementById('display-growth-area-name').textContent = state.growthArea;
+      document.getElementById('display-growth-area-score').textContent = `${state.growthAreaScore} / 100`;
+    }
+
+    /**
+     * Detailed Breakdown Table Generator
+     */
+    function renderBreakdownTable() {
+      const tbody = document.getElementById('breakdown-table-body');
+      tbody.innerHTML = '';
+
+      const items = [
+        {
+          key: 'academics',
+          name: 'Academics',
+          sub: state.academicScale === 'gpa' ? `${(state.scores.academics/10).toFixed(1)} GPA` : `${Math.round(state.scores.academics)}% Marks`,
+          score: state.scores.academics,
+          weight: state.weights.academics,
+          color: '#3b82f6',
+        },
+        {
+          key: 'projects',
+          name: 'Projects',
+          sub: `Comp: ${document.getElementById('select-project-complexity').value} | Imp: ${document.getElementById('select-project-impact').value}`,
+          score: state.scores.projects,
+          weight: state.weights.projects,
+          color: '#a855f7',
+        },
+        {
+          key: 'attendance',
+          name: 'Attendance',
+          sub: `${Math.round(state.scores.attendance)}% logged presence`,
+          score: state.scores.attendance,
+          weight: state.weights.attendance,
+          color: '#10b981',
+        },
+        {
+          key: 'sports',
+          name: 'Sports',
+          sub: `Lvl: ${document.getElementById('select-sports-level').value} | ${document.getElementById('range-sports-medals').value} Medals`,
+          score: state.scores.sports,
+          weight: state.weights.sports,
+          color: '#f97316',
+        },
+        {
+          key: 'clubs',
+          name: 'Clubs / Extr.',
+          sub: `Role: ${document.getElementById('select-club-role').value} | ${document.getElementById('range-club-hours').value}h`,
+          score: state.scores.clubs,
+          weight: state.weights.clubs,
+          color: '#06b6d4',
+        },
+        {
+          key: 'comm',
+          name: 'Comm Skills',
+          sub: `Pres: ${document.getElementById('range-star-pres').value}⭐ Team: ${document.getElementById('range-star-team').value}⭐`,
+          score: state.scores.comm,
+          weight: state.weights.comm,
+          color: '#ec4899',
+        },
+      ];
+
+      let avgSum = 0;
+      let totalWeightSum = 0;
+
+      items.forEach(item => {
+        const pointsEarned = item.score * item.weight * 10;
+        avgSum += item.score;
+        totalWeightSum += item.weight;
+
+        // Status Badge
+        let statusBadge = '';
+        if (item.score >= 90) {
+          statusBadge = '<span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">ELITE</span>';
+        } else if (item.score >= 75) {
+          statusBadge = '<span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">PROFICIENT</span>';
+        } else if (item.score >= 60) {
+          statusBadge = '<span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">PASSING</span>';
+        } else {
+          statusBadge = '<span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">SUPPORT</span>';
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-800/30 transition-colors';
+        tr.innerHTML = `
+          <td class="py-2 px-2 font-medium text-slate-200 flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full" style="background-color: ${item.color}"></span>
+            <span>${item.name}</span>
+          </td>
+          <td class="py-2 px-2 text-center text-slate-400 font-mono text-[10px]">${item.sub}</td>
+          <td class="py-2 px-2 text-right font-mono text-slate-300 font-semibold">${item.score.toFixed(1)}</td>
+          <td class="py-2 px-2 text-right font-mono text-slate-400">${Math.round(item.weight * 100)}%</td>
+          <td class="py-2 px-2 text-right font-mono font-bold text-white">${pointsEarned.toFixed(1)}</td>
+          <td class="py-2 px-2 text-center">${statusBadge}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Update Table Footer
+      document.getElementById('tfoot-avg-score').textContent = `${(avgSum / items.length).toFixed(1)}`;
+      document.getElementById('tfoot-total-weight').textContent = `${Math.round(totalWeightSum * 100)}%`;
+      document.getElementById('tfoot-total-points').textContent = `${state.totalPoints.toFixed(1)}`;
+      document.getElementById('tfoot-tier-badge').textContent = state.tier;
+    }
+
+    /**
+     * Radar Chart Initialization & Live Updates (High Density Dark Theme)
+     */
+    function initRadarChart() {
+      const ctx = document.getElementById('studentRadarChart').getContext('2d');
+
+      const data = {
+        labels: [
+          'Academics (30%)',
+          'Projects (20%)',
+          'Attendance (15%)',
+          'Sports (15%)',
+          'Clubs (10%)',
+          'Comm (10%)'
+        ],
+        datasets: [
+          {
+            label: 'Student Profile',
+            data: [
+              state.scores.academics,
+              state.scores.projects,
+              state.scores.attendance,
+              state.scores.sports,
+              state.scores.clubs,
+              state.scores.comm
+            ],
+            backgroundColor: 'rgba(59, 130, 246, 0.25)',
+            borderColor: '#3b82f6',
+            borderWidth: 2,
+            pointBackgroundColor: '#60a5fa',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 1.5,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+          },
+          {
+            label: 'Benchmark (90 Target)',
+            data: [90, 90, 90, 90, 90, 90],
+            backgroundColor: 'rgba(148, 163, 184, 0.05)',
+            borderColor: '#64748b',
+            borderWidth: 1.5,
+            borderDash: [4, 4],
+            pointRadius: 0,
+            fill: true,
+          }
+        ]
+      };
+
+      const config = {
+        type: 'radar',
+        data: data,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {
+            duration: 350,
+          },
+          scales: {
+            r: {
+              angleLines: {
+                color: 'rgba(51, 65, 85, 0.6)',
+              },
+              grid: {
+                color: 'rgba(30, 41, 59, 0.8)',
+              },
+              suggestedMin: 0,
+              suggestedMax: 100,
+              ticks: {
+                stepSize: 25,
+                backdropColor: 'transparent',
+                color: '#64748b',
+                font: {
+                  size: 9,
+                  family: 'JetBrains Mono',
+                }
+              },
+              pointLabels: {
+                font: {
+                  size: 10,
+                  weight: '600',
+                  family: 'JetBrains Mono',
+                },
+                color: '#94a3b8',
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              backgroundColor: '#090d16',
+              borderColor: '#334155',
+              borderWidth: 1,
+              titleFont: { size: 11, weight: 'bold', family: 'JetBrains Mono' },
+              bodyFont: { size: 10, family: 'JetBrains Mono' },
+              padding: 8,
+              cornerRadius: 6,
+              callbacks: {
+                label: function(context) {
+                  return ` ${context.dataset.label}: ${context.raw.toFixed(1)} / 100`;
+                }
+              }
+            }
+          }
+        }
+      };
+
+      radarChartInstance = new Chart(ctx, config);
+    }
+
+    function updateRadarChart() {
+      if (!radarChartInstance) return;
+
+      // Update Labels with active weights
+      radarChartInstance.data.labels = [
+        `ACA (${Math.round(state.weights.academics * 100)}%)`,
+        `PRJ (${Math.round(state.weights.projects * 100)}%)`,
+        `ATT (${Math.round(state.weights.attendance * 100)}%)`,
+        `SPT (${Math.round(state.weights.sports * 100)}%)`,
+        `CLB (${Math.round(state.weights.clubs * 100)}%)`,
+        `COM (${Math.round(state.weights.comm * 100)}%)`
+      ];
+
+      // Update dataset scores
+      radarChartInstance.data.datasets[0].data = [
+        state.scores.academics,
+        state.scores.projects,
+        state.scores.attendance,
+        state.scores.sports,
+        state.scores.clubs,
+        state.scores.comm
+      ];
+
+      // Benchmark visibility
+      radarChartInstance.data.datasets[1].hidden = !state.showBenchmark;
+
+      radarChartInstance.update();
+    }
+
+    function toggleBenchmarkLine() {
+      state.showBenchmark = document.getElementById('toggle-benchmark').checked;
+      updateRadarChart();
+    }
+
+    /**
+     * Automated AI Insights Engine
+     */
+    function generateAiInsights() {
+      const sorted = Object.entries(state.scores).sort((a, b) => b[1] - a[1]);
+      const top1 = sorted[0];
+      const top2 = sorted[1];
+      const low1 = sorted[sorted.length - 1];
+      const low2 = sorted[sorted.length - 2];
+
+      const meta = {
+        academics: {
+          name: 'Academic Rigor',
+          strength: 'Exhibits robust conceptual mastery and consistent assessment performance.',
+          action: 'Schedule structured revision blocks to elevate exam accuracy above 90% benchmark.',
+        },
+        projects: {
+          name: 'Projects & Innovation',
+          strength: 'Shows superior technical problem-solving, documentation completeness, and project follow-through.',
+          action: 'Expand research scope toward regional science fairs or open-source publication to maximize impact.',
+        },
+        attendance: {
+          name: 'Attendance & Discipline',
+          strength: 'Maintains steady classroom presence and punctuality, establishing a resilient learning rhythm.',
+          action: 'Sustain uninterrupted attendance to safeguard core lecture mastery and prevent weight deductions.',
+        },
+        sports: {
+          name: 'Sports & Athletics',
+          strength: 'Displays active athletic engagement, physical endurance, and competitive spirit.',
+          action: 'Participate in structured district training camps or lead an intramural squad to unlock higher bracket bonuses.',
+        },
+        clubs: {
+          name: 'Club Leadership',
+          strength: 'Actively contributes to campus initiatives and shows strong collaborative citizenship.',
+          action: 'Target a designated committee lead or presidential role in an active academic/creative society.',
+        },
+        comm: {
+          name: 'Communication Skills',
+          strength: 'Demonstrates confident articulation, receptive teamwork, and persuasive public presentation.',
+          action: 'Enroll in debate panels or seminar moderations to polish impromptu argumentation and executive presence.',
+        }
+      };
+
+      // 1. Holistic Narrative Generation
+      let narrative = '';
+      if (state.totalPoints >= 900) {
+        narrative = `${state.student.name} ranks in the top 5th percentile with an outstanding composite score of ${state.totalPoints.toFixed(1)} pts. The performance profile reflects exemplary balance across academics, co-curricular leadership, and disciplined attendance.`;
+      } else if (state.totalPoints >= 750) {
+        narrative = `${state.student.name} demonstrates a proficient and highly capable foundation scoring ${state.totalPoints.toFixed(1)} pts. Standout performance is anchored in ${meta[top1[0]].name} (${top1[1].toFixed(1)}/100). Prioritizing strategic gains in ${meta[low1[0]].name} will elevate this profile into the elite 900+ Exemplary tier.`;
+      } else if (state.totalPoints >= 600) {
+        narrative = `${state.student.name} demonstrates steady progression (${state.totalPoints.toFixed(1)} pts) with solid baseline capability in ${meta[top1[0]].name}. However, noticeable variance exists in ${meta[low1[0]].name} (${low1[1].toFixed(1)}/100). A focused 60-day action roadmap is recommended.`;
+      } else {
+        narrative = `${state.student.name} currently stands at ${state.totalPoints.toFixed(1)} pts, requiring an immediate structured intervention plan. Primary areas needing revitalization include ${meta[low1[0]].name} and ${meta[low2[0]].name}.`;
+      }
+      document.getElementById('ai-narrative-summary').textContent = narrative;
+
+      // 2. Strengths
+      document.getElementById('ai-strength-1').innerHTML = `
+        <div class="text-[11px] font-semibold text-white font-mono">1. ${meta[top1[0]].name} (${top1[1].toFixed(1)} / 100)</div>
+        <p class="text-[11px] text-slate-400 leading-normal">${meta[top1[0]].strength}</p>
+      `;
+      document.getElementById('ai-strength-2').innerHTML = `
+        <div class="text-[11px] font-semibold text-white font-mono">2. ${meta[top2[0]].name} (${top2[1].toFixed(1)} / 100)</div>
+        <p class="text-[11px] text-slate-400 leading-normal">${meta[top2[0]].strength}</p>
+      `;
+
+      // 3. Growth Areas
+      document.getElementById('ai-growth-1').innerHTML = `
+        <div class="text-[11px] font-semibold text-orange-300 font-mono">1. Revitalize ${meta[low1[0]].name} (${low1[1].toFixed(1)} / 100)</div>
+        <p class="text-[11px] text-slate-400 leading-normal">${meta[low1[0]].action}</p>
+      `;
+      document.getElementById('ai-growth-2').innerHTML = `
+        <div class="text-[11px] font-semibold text-orange-300 font-mono">2. Boost ${meta[low2[0]].name} (${low2[1].toFixed(1)} / 100)</div>
+        <p class="text-[11px] text-slate-400 leading-normal">${meta[low2[0]].action}</p>
+      `;
+    }
+
+    /**
+     * Load Sample Profiles
+     */
+    function loadPreset(key) {
+      const p = PRESETS[key];
+      if (!p) return;
+
+      // Update Inputs
+      document.getElementById('input-student-name').value = p.name;
+      document.getElementById('input-student-id').value = p.id;
+      document.getElementById('input-student-grade').value = p.grade;
+
+      // Profile text
+      handleProfileChange();
+
+      // Academic
+      document.getElementById('range-academic').value = p.academicVal;
+
+      // Sports
+      document.getElementById('select-sports-level').value = p.sportsLevel;
+      document.getElementById('range-sports-medals').value = p.sportsMedals;
+
+      // Projects
+      document.getElementById('select-project-complexity').value = p.projectComplexity;
+      document.getElementById('select-project-impact').value = p.projectImpact;
+      document.getElementById('range-project-completion').value = p.projectCompletion;
+
+      // Clubs
+      document.getElementById('select-club-role').value = p.clubRole;
+      document.getElementById('range-club-hours').value = p.clubHours;
+
+      // Soft Skills
+      document.getElementById('range-star-pres').value = p.starPres;
+      document.getElementById('range-star-team').value = p.starTeam;
+      document.getElementById('range-star-lead').value = p.starLead;
+
+      // Attendance
+      document.getElementById('range-attendance').value = p.attendance;
+
+      // Highlight active button
+      ['allrounder', 'academic', 'sports', 'innovator', 'support'].forEach(id => {
+        const btn = document.getElementById(`btn-preset-${id}`);
+        if (btn) {
+          btn.className = 'px-2 py-1 text-xs font-medium rounded-md text-slate-400 hover:text-slate-200 transition-colors';
+        }
+      });
+      const activeMap = {
+        allRounder: 'allrounder',
+        academicFocus: 'academic',
+        sportsStar: 'sports',
+        creativeInnovator: 'innovator',
+        needsSupport: 'support'
+      };
+      const activeBtn = document.getElementById(`btn-preset-${activeMap[key]}`);
+      if (activeBtn) {
+        activeBtn.className = 'px-2 py-1 text-xs font-medium rounded-md bg-blue-600 text-white shadow-xs transition-colors font-semibold';
+      }
+
+      updateCalculations();
+    }
+
+    /**
+     * Clear / Blank Form
+     */
+    function resetToBlank() {
+      document.getElementById('input-student-name').value = 'New Student';
+      document.getElementById('input-student-id').value = 'STU-NEW';
+      document.getElementById('input-student-grade').value = 'Grade 10';
+      handleProfileChange();
+
+      document.getElementById('range-academic').value = 75;
+      document.getElementById('select-sports-level').value = 40;
+      document.getElementById('range-sports-medals').value = 0;
+      document.getElementById('select-project-complexity').value = 80;
+      document.getElementById('select-project-impact').value = 65;
+      document.getElementById('range-project-completion').value = 75;
+      document.getElementById('select-club-role').value = 50;
+      document.getElementById('range-club-hours').value = 20;
+      document.getElementById('range-star-pres').value = 3.5;
+      document.getElementById('range-star-team').value = 3.5;
+      document.getElementById('range-star-lead').value = 3.5;
+      document.getElementById('range-attendance').value = 85;
+
+      updateCalculations();
+    }
+
+    /**
+     * Weights Customization Modal Logic
+     */
+    function toggleWeightsModal(show) {
+      const modal = document.getElementById('modal-weights');
+      if (show) {
+        // Sync inputs with state
+        document.getElementById('mw-range-academics').value = Math.round(state.weights.academics * 100);
+        document.getElementById('mw-range-projects').value = Math.round(state.weights.projects * 100);
+        document.getElementById('mw-range-attendance').value = Math.round(state.weights.attendance * 100);
+        document.getElementById('mw-range-sports').value = Math.round(state.weights.sports * 100);
+        document.getElementById('mw-range-clubs').value = Math.round(state.weights.clubs * 100);
+        document.getElementById('mw-range-comm').value = Math.round(state.weights.comm * 100);
+
+        handleWeightChange();
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function handleWeightChange() {
+      const wAcad = parseInt(document.getElementById('mw-range-academics').value) || 0;
+      const wProj = parseInt(document.getElementById('mw-range-projects').value) || 0;
+      const wAtt = parseInt(document.getElementById('mw-range-attendance').value) || 0;
+      const wSport = parseInt(document.getElementById('mw-range-sports').value) || 0;
+      const wClub = parseInt(document.getElementById('mw-range-clubs').value) || 0;
+      const wComm = parseInt(document.getElementById('mw-range-comm').value) || 0;
+
+      document.getElementById('mw-val-academics').textContent = `${wAcad}%`;
+      document.getElementById('mw-val-projects').textContent = `${wProj}%`;
+      document.getElementById('mw-val-attendance').textContent = `${wAtt}%`;
+      document.getElementById('mw-val-sports').textContent = `${wSport}%`;
+      document.getElementById('mw-val-clubs').textContent = `${wClub}%`;
+      document.getElementById('mw-val-comm').textContent = `${wComm}%`;
+
+      const sum = wAcad + wProj + wAtt + wSport + wClub + wComm;
+      const sumTotalEl = document.getElementById('modal-weight-total');
+      const sumBox = document.getElementById('modal-weight-sum-box');
+
+      sumTotalEl.textContent = `${sum}%`;
+
+      if (sum === 100) {
+        sumTotalEl.className = 'font-extrabold text-emerald-400 text-sm font-mono';
+        sumBox.className = 'flex items-center justify-between p-2.5 rounded-lg bg-slate-950 border border-emerald-500/30 mb-4 text-xs font-mono';
+      } else {
+        sumTotalEl.className = 'font-extrabold text-rose-400 text-sm font-mono';
+        sumBox.className = 'flex items-center justify-between p-2.5 rounded-lg bg-slate-950 border border-rose-500/30 mb-4 text-xs font-mono';
+      }
+
+      // If valid, apply to state in real-time
+      if (sum === 100) {
+        state.weights.academics = wAcad / 100;
+        state.weights.projects = wProj / 100;
+        state.weights.attendance = wAtt / 100;
+        state.weights.sports = wSport / 100;
+        state.weights.clubs = wClub / 100;
+        state.weights.comm = wComm / 100;
+
+        // Update card weight labels
+        const elA = document.querySelector('.weight-display-academic');
+        if (elA) elA.textContent = `${wAcad}%`;
+        const elP = document.querySelector('.weight-display-projects');
+        if (elP) elP.textContent = `${wProj}%`;
+        const elAtt = document.querySelector('.weight-display-attendance');
+        if (elAtt) elAtt.textContent = `${wAtt}%`;
+        const elS = document.querySelector('.weight-display-sports');
+        if (elS) elS.textContent = `${wSport}%`;
+        const elC = document.querySelector('.weight-display-clubs');
+        if (elC) elC.textContent = `${wClub}%`;
+        const elCm = document.querySelector('.weight-display-comm');
+        if (elCm) elCm.textContent = `${wComm}%`;
+
+        updateCalculations();
+      }
+    }
+
+    function resetWeightsToDefault() {
+      document.getElementById('mw-range-academics').value = 30;
+      document.getElementById('mw-range-projects').value = 20;
+      document.getElementById('mw-range-attendance').value = 15;
+      document.getElementById('mw-range-sports').value = 15;
+      document.getElementById('mw-range-clubs').value = 10;
+      document.getElementById('mw-range-comm').value = 10;
+
+      handleWeightChange();
+    }
+  </script>
+</body>
+</html>

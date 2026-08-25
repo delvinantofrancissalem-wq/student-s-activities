@@ -1,0 +1,6 @@
+{
+  "name": "Student Performance Dashboard",
+  "description": "Interactive multi-dimensional student performance analytics dashboard with weighted scoring, dynamic radar chart, automated insights, and customizable profiles.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
